@@ -1,41 +1,47 @@
 #include<EEPROM.h>
 
-int eeprom_size = 4096;
+#define SER_MON_BAUD_RATE   115200  // 115.2 kBi/s
+#define EEPROM_SIZE         4096    // Check your EEPROM's size
+#define PROMPT_TIMEOUT      10000UL // Time to wait for a confirmation command when erasing (10s)
 
 void setup() {
-  Serial.begin(115200);
+  Serial.begin(SER_MON_BAUD_RATE); // Start a serial port
   Serial.println("To READ EEPROM --> Write r \nTo CLEAR EEPROM --> Write c \n");
-  Serial.printf("EEPROM size: %d\n", eeprom_size);  
+  Serial.printf("EEPROM size: %d\n", EEPROM_SIZE);  
 }
 
 void loop() {
-  if(Serial.available() > 0){
-    String c = Serial.readString();
-    if(c.indexOf("r\r\n") == 0){
+  if(Serial.available() > 0){ // If there's something written to the serial monitor
+    String c = Serial.readString(); // Read the available command
+    if(c.indexOf("r\r\n") == 0){ // Compare the read data to 'r' (My serial monitor is set
+                                 // to sent each command with a carri&age return & a new line
+                                 // characters ("\r\n")
       Serial.println("EEPROM contains");
-      EEPROM.begin(eeprom_size);
+      EEPROM.begin(EEPROM_SIZE); // We must begin the EEPROM
       // Reading EEPROM data
-      for (int i = 0; i < eeprom_size; i++){
-           byte c = EEPROM.read(i);
+      for (int i = 0; i < EEPROM_SIZE; i++){
+           byte c = EEPROM.read(i); // Read the byte at the index i
            Serial.printf("%c|", c);
         }
     
       Serial.println();
-      EEPROM.end();
+      EEPROM.end(); // Close the EEPROM 
     }
     else if(c.indexOf("c\r\n") == 0){
+      unsigned long start_count_ = millis();
       Serial.println("Going to clear EEPROM, Are you sure? \ny/n (write y to continue, n to abort)");
       do{
         Serial.print('.');
-        delay(50);      
-      }while(!Serial.available());
+        delay(100);      
+    // While no command was written, and we haven't been waiting for more than PROMPT_TIMEOUT (10 seconds)
+      }while(!Serial.available() && millis() - start_count_ <= PROMPT_TIMEOUT);
       Serial.println();
       String t = Serial.readString();
       if(t.indexOf("y\r\n") == 0){
         Serial.println("Clearing EEPROM");
-        EEPROM.begin(eeprom_size);
+        EEPROM.begin(EEPROM_SIZE);
         // Erasing EEPROM data
-        for (int i = 0; i < eeprom_size; i++){  
+        for (int i = 0; i < EEPROM_SIZE; i++){  
            EEPROM.write(i, 0);
         }
         Serial.println("Done erasing");

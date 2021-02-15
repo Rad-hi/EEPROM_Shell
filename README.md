@@ -16,7 +16,7 @@ This sketch provides a way to play with EEPROM and understand how it works.
 - Upload the code, open your Serial monitor, and set its baud rate to *115200* (or change the one in the code to match your needs, since some Arduino borads might struggle with *115200 bips*).
 
 - To interact with the EEPROM:
-> Write 'c' to the serial monitor to CLEAR the EEPROM. You'll be asked for confirmation, write 'y' to proceed, 'n' to abort.
+> Write 'c' to the serial monitor to CLEAR the EEPROM. You'll be asked for confirmation, write 'y' to proceed, 'n' to abort (The code will wait for 10 seconds before aborting automatically).
 
 > Write 'r' to the serial monitor to READ the EEPROM content.
 

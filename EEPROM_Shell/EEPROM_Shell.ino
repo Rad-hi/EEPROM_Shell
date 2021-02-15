@@ -36,21 +36,24 @@ void loop() {
     // While no command was written, and we haven't been waiting for more than PROMPT_TIMEOUT (10 seconds)
       }while(!Serial.available() && millis() - start_count_ <= PROMPT_TIMEOUT);
       Serial.println();
-      String t = Serial.readString();
-      if(t.indexOf("y\r\n") == 0){
-        Serial.println("Clearing EEPROM");
-        EEPROM.begin(EEPROM_SIZE);
-        // Erasing EEPROM data
-        for (int i = 0; i < EEPROM_SIZE; i++){  
-           EEPROM.write(i, 0); // Clear EEPROM columns one by one by writing 0 to each one of them
+      if(Serial.available()>0){
+        String t = Serial.readString();
+        if(t.indexOf("y\r\n") == 0){
+          Serial.println("Clearing EEPROM");
+          EEPROM.begin(EEPROM_SIZE);
+          // Erasing EEPROM data
+          for (int i = 0; i < EEPROM_SIZE; i++){  
+             EEPROM.write(i, 0); // Clear EEPROM columns one by one by writing 0 to each one of them
+          }
+          Serial.println("Done erasing");
+          EEPROM.commit(); // After making a change to the EEPROM, we have to commit it in order to make it permanent
+          EEPROM.end();
         }
-        Serial.println("Done erasing");
-        EEPROM.commit(); // After making a change to the EEPROM, we have to commit it in order to make it permanent
-        EEPROM.end();
+        else if(t.indexOf("n\r\n") == 0){
+          return;
+        }
       }
-      else if(t.indexOf("n\r\n") == 0){
-        return;
-      }
+      else Serial.println("Aborted erasing, command timeout!");
     }
     // If we receive anything but r/c, it's an unknown command
     else Serial.println("Unknown command! r --> read, c --> clear");

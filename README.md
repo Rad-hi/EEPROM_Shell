@@ -20,4 +20,8 @@ This sketch provides a way to play with EEPROM and understand how it works.
 
 > Write 'r' to the serial monitor to READ the EEPROM content.
 
+## The sketch being used:
+
+<img src="images/EEPROM.gif" width="720">
+
 Have fun!

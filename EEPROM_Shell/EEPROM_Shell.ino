@@ -28,7 +28,7 @@ void loop() {
       EEPROM.end(); // Close the EEPROM 
     }
     else if(c.indexOf("c\r\n") == 0){
-      unsigned long start_count_ = millis();
+      unsigned long start_count_ = millis(); //https://www.arduino.cc/reference/en/language/functions/time/millis/
       Serial.println("Going to clear EEPROM, Are you sure? \ny/n (write y to continue, n to abort)");
       do{
         Serial.print('.');
@@ -42,16 +42,17 @@ void loop() {
         EEPROM.begin(EEPROM_SIZE);
         // Erasing EEPROM data
         for (int i = 0; i < EEPROM_SIZE; i++){  
-           EEPROM.write(i, 0);
+           EEPROM.write(i, 0); // Clear EEPROM columns one by one by writing 0 to each one of them
         }
         Serial.println("Done erasing");
-        EEPROM.commit();
+        EEPROM.commit(); // After making a change to the EEPROM, we have to commit it in order to make it permanent
         EEPROM.end();
       }
       else if(t.indexOf("n\r\n") == 0){
         return;
       }
     }
+    // If we receive anything but r/c, it's an unknown command
     else Serial.println("Unknown command! r --> read, c --> clear");
   }
   

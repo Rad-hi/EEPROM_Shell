@@ -43,8 +43,7 @@ void loop() {
           EEPROM.begin(EEPROM_SIZE);
           // Erasing EEPROM data
           for (int i = 0; i < EEPROM_SIZE; i++){  
-             EEPROM.update(i, 0); // Only change one column's content if it's different than the value to be written
-             //EEPROM.write(i, 0); // Clear EEPROM columns one by one by writing 0 to each one of them
+            EEPROM.write(i, 0); // Clear EEPROM columns one by one by writing 0 to each one of them
           }
           Serial.println("Done erasing");
           EEPROM.commit(); // After making a change to the EEPROM, we have to commit it in order to make it permanent
